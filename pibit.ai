@@ -1,0 +1,101 @@
+import json
+
+def parse_resume(resume_text):
+    resume_data = {
+        "Name": "",
+        "Contact Information": {
+            "Email": "",
+            "Phone": "",
+            "Address": ""
+        },
+        "Education": "",
+        "Experience": [],
+        "Skills": [],
+        "Projects": []
+    }
+
+    lines = resume_text.split('\n')
+
+    resume_data["Name"] = lines[0]
+
+    for line in lines:
+        if "Email:" in line:
+            resume_data["Contact Information"]["Email"] = line.split("Email:")[1].strip()
+        if "Phone:" in line:
+            resume_data["Contact Information"]["Phone"] = line.split("Phone:")[1].strip()
+        if "Address:" in line:
+            resume_data["Contact Information"]["Address"] = line.split("Address:")[1].strip()
+
+    education_index = lines.index("EDUCATION") + 1
+    resume_data["Education"] = lines[education_index]
+
+    experience_index = lines.index("INTERNSHIP") + 1
+    while experience_index < len(lines) and not lines[experience_index].startswith("SKILLS"):
+        resume_data["Experience"].append(lines[experience_index].strip())
+        experience_index += 1
+
+    skills_index = lines.index("SKILLS") + 1
+    while skills_index < len(lines) and not lines[skills_index].startswith("PROJECTS"):
+        resume_data["Skills"].append(lines[skills_index].strip())
+        skills_index += 1
+
+    projects_index = lines.index("PROJECTS") + 1
+    while projects_index < len(lines):
+        resume_data["Projects"].append(lines[projects_index].strip())
+        projects_index += 1
+
+    return json.dumps(resume_data, indent=4)
+
+resume_text = """
+Jaswanthsrikarreddy
+Linkedin:linkedin.com/in/jaswanth-pallamreddy Email:jaswanthpallamreddy@gmail.com
+Github:https://github.com/Jaswanth702 Mobile: +91-7981502702
+
+SKILLS
+Languages: Python, R language.
+Data Management: MS Excel, Microsoft Office, Tableau.
+Tools/Platforms: MySQL,
+Soft Skills: Problem-Solving Skills, Team Player, Project Management, Adaptability
+
+INTERNSHIP
+R language and data visualization Nov 2023 - Now
+Data Handling and Preparation: Proficiently handled, cleaned, and preprocessed large datasets, ensuring data integrity and quality for analysis.
+Exploratory Data Analysis (EDA): Conducted comprehensive EDA using R, uncovering valuable insights and patterns within the data, which facilitated data-driven decision-making.
+
+PROJECTS
+Fake new detection | python, Pandas ,Numpy.
+The project aims to develop a machine-learning model to detect fake news articles and prevent the spread of miss-information.
+The project will utilize a dataset of news articles, News.csv, to train and test the model’s accuracy in distinguishing between true and fake news.
+The model I built using Python and popular data science libraries such as Pandas, NumPy.
+Car Parking System | Java.
+Designed and implemented a user-friendly system for managing parking spaces,vehicle entry,and exit.
+Employed data structures (such as arrays & linked list) to track available parking slots.
+Implemented algorithms for vehicle allocation and real-time status updates.
+website design /digital marketing
+Movie booking blog and website | product selling website
+Website and blog are made to make it easier for visitors to book movies in theatres near lpu campus.
+Google analytics to monitor the number of visitors to website and blog
+
+CERTIFICATES
+Board infinity
+R language and data visualization
+LPU
+Online Summer Training Course on Solving Competitive Problems using Data Structures
+
+ACHIEVEMENTS
+Head of marketing in UNYC Jul’23-Present
+United Nations Youth Community is a student organization in LPU.
+Hr and outreach in untangle Jul’23-present
+Untangle is a student organization in LPU.
+
+EDUCATION
+Lovely Professional University Punjab, India
+Bachelor of Technology - Computer Science and Engineering; CGPA: 6.62 Since August 2021
+Srichaitanya high School Nellore
+Intermediate; Percentage: 82% April 2018 - March 2019
+srichaitanya jr.collage Vijayawada
+Matriculation; Percentage: 67% April 2019 - March 2021
+"""
+
+parsed_resume = parse_resume(resume_text)
+print(parsed_resume)
